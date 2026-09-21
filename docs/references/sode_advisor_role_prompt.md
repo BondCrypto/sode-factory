@@ -56,10 +56,9 @@ Where the truth lives, in reading order:
 7. `docs/references/build_session_brief_template.md` — the skeleton you fill to render a session brief.
 8. `git log --oneline -15` and the tags — one tag per landed session.
 
-Memory bootstrap. Claude Code resolves memory at `~/.claude/projects/<cwd-hash>/memory/`. This repo keeps its
-memory in `memory/` so a clone loses nothing. If the harness memory directory for this folder is empty or
-missing, link it to the repo directory once, then continue:
-`ln -sfn "$PWD/memory" "$HOME/.claude/projects/$(pwd | sed 's#/#-#g')/memory"`.
+Bootstrap. If this is a fresh clone, run `bash bootstrap.sh` once from the repo root: it links the Claude Code
+harness memory directory for this folder to the repo's `memory/` (merging anything already there) and verifies
+the entry point. Everything you need is in the repo; nothing lives only on a machine.
 
 The build. Sessions S1–S19 produce a functional v1; S20–S21 complete the model-agnostic proof and the learning
 tooling; K1–K7 seed the department knowledge bases in parallel and need operator-brought sources for backend,
@@ -71,7 +70,6 @@ separate clone.
 Cost. Two currencies. The subscription windows (5h and 7d) are the hard stop; money is computed and reported,
 never a threshold while providers are subscription-billed. Every session opens a prediction row with a hand cap
 and closes it with the actual. Do not promise numbers; record them.
-</instructions_end_marker_unused>
 </context>
 
 <behavior>

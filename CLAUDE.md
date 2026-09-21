@@ -58,13 +58,15 @@ carries the what. Provider attribution trailers are not used. Sode oracle traile
 `Sode-Attempt`, `Sode-Acceptance-Hash`) are required on worker commits once C2 exists. One logical change per
 commit. Tag at the end of every build session. Commit identity: `alexbond <49620818+BondCrypto@users.noreply.github.com>`.
 
-## Memory bootstrap (once per machine)
-Claude Code resolves memory at `~/.claude/projects/<cwd-hash>/memory/`. This repo keeps memory in `memory/`. If
-the harness directory for this folder is empty or missing, link it once:
-
+## Bootstrap from scratch (once per machine)
 ```bash
-ln -sfn "$PWD/memory" "$HOME/.claude/projects/$(pwd | sed 's#/#-#g')/memory"
+git clone https://github.com/BondCrypto/sode-factory.git && cd sode-factory && bash bootstrap.sh
 ```
+`bootstrap.sh` is idempotent and offline. It verifies the entry point is present, links the Claude Code harness
+memory directory for this folder (`~/.claude/projects/<folder-path-with-dashes>/memory/`) to the repo's `memory/`
+so the advisor's memory is version-controlled, merges any memory the harness already created, and prints the next
+step. Then open Claude Code here and paste `docs/references/sode_advisor_role_prompt.md` (below its marker).
+Everything the advisor needs is in the repo; nothing lives only on a machine.
 
 ## Sibling relationship
 The research repo growth-hack-system designed sode and dispatches sessions S1–S9. Neither repo imports the
