@@ -1,0 +1,4 @@
+- ⭐ [CURRENT STATE — read first](current_state.md) — the NOW anchor: HEAD · status · landed · next · in-flight · open decisions.
+- ⭐ [Spec is the constitution](spec_is_the_constitution.md) — locked sections change only through an architecture-class item + ADR + operator lock; code that disagrees with the spec is the defect.
+- ⭐ [Standalone-clone invariant](standalone_clone_invariant.md) — no other repo's paths, ids, names or credentials; port by name with a manifest, never import.
+- ⭐ [Brief per session, rendered not pointed](brief_per_session_rendered.md) — a stub or a doc pointer is not a brief; render from the template with spec sections inlined; lint before dispatch.
