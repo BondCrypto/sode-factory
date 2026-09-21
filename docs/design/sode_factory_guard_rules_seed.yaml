@@ -1,0 +1,84 @@
+# sode-factory — guard rule SEED catalogue (generated 2026-09-18 from this machine's live permission rules)
+# Source: ~/.claude/settings.json permissions.deny / permissions.ask (user scope) + .claude/settings.local.json ask
+# (repo scope). VERBATIM patterns; ids + threat_class added; `applies_to` defaults to [worker, engine] except the
+# annotated worker-only rows. Consumed by the sode W1-3 brief (C4). DATA ONLY — nothing here executes.
+schema_version: 1
+generated_on: "2026-09-18"
+sode_edits:
+  - "ASK on package installs applies ONLY to NEW dependencies; the pinned lockfile-sync path is ALLOW (arch §8.1 a)"
+  - "an edit to a dependency manifest is a D2 security review ITEM, not a prompt (arch §8.1 b)"
+  - "worker push is allowed ONLY to the item branch sode/<id> in `standard`; any push is denied in `restricted` (arch §8.1 c)"
+  - "ADD worker-only denies: publish/upload commands, PR merge, repo delete (arch §8.1 L1)"
+deny:
+  - {id: D001, pattern: "Bash(git push --force:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D002, pattern: "Bash(git push -f:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D003, pattern: "Bash(git push --delete:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D004, pattern: "Bash(git reset --hard:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D005, pattern: "Bash(git clean -f:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D006, pattern: "Bash(git clean -d:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D007, pattern: "Bash(git clean -x:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D008, pattern: "Bash(git reflog expire:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D009, pattern: "Bash(git filter-branch:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D010, pattern: "Bash(git stash drop:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D011, pattern: "Bash(git stash clear:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D012, pattern: "Bash(git config core.bare true:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D013, pattern: "Bash(git config core.bare=true:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D014, pattern: "Bash(git commit --no-verify:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D015, pattern: "Bash(rm -rf:*)", threat_class: destructive_fs, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D016, pattern: "Bash(rm -fr:*)", threat_class: destructive_fs, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D017, pattern: "Bash(find . -delete:*)", threat_class: destructive_fs, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D018, pattern: "Bash(mkfs:*)", threat_class: destructive_fs, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D019, pattern: "Bash(sudo:*)", threat_class: privilege_or_host_state, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D020, pattern: "Bash(doas:*)", threat_class: privilege_or_host_state, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D021, pattern: "Bash(shutdown:*)", threat_class: privilege_or_host_state, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D022, pattern: "Bash(reboot:*)", threat_class: privilege_or_host_state, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D023, pattern: "Bash(halt:*)", threat_class: privilege_or_host_state, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D024, pattern: "Bash(poweroff:*)", threat_class: privilege_or_host_state, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D025, pattern: "Bash(crontab -r:*)", threat_class: privilege_or_host_state, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D026, pattern: "Read(.env)", threat_class: secret_exposure, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D027, pattern: "Read(**/.env)", threat_class: secret_exposure, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D028, pattern: "Read(**/.env.*)", threat_class: secret_exposure, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D029, pattern: "Read(**/credentials*)", threat_class: secret_exposure, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D030, pattern: "Read(**/*secret*)", threat_class: secret_exposure, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D031, pattern: "Read(**/*.pem)", threat_class: secret_exposure, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D032, pattern: "Read(**/id_rsa*)", threat_class: secret_exposure, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D033, pattern: "Edit(**/.claude/audit/**)", threat_class: audit_tamper, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  - {id: D034, pattern: "Write(**/.claude/audit/**)", threat_class: audit_tamper, source_ref: "~/.claude/settings.json#deny", applies_to: [worker, engine]}
+  # worker-only additions (arch §8.1): the engine's own `ship` stage performs merges under lane policy
+  - {id: D035, pattern: "Bash(gh pr merge:*)", threat_class: other, source_ref: "arch §8.1 worker denies", applies_to: [worker]}
+  - {id: D036, pattern: "Bash(gh repo delete:*)", threat_class: other, source_ref: "arch §8.1 worker denies", applies_to: [worker]}
+  - {id: D037, pattern: "Bash(npm publish:*)", threat_class: publish_or_exfiltrate, source_ref: "arch §8.1 worker denies", applies_to: [worker]}
+  - {id: D038, pattern: "Bash(twine upload:*)", threat_class: publish_or_exfiltrate, source_ref: "arch §8.1 worker denies", applies_to: [worker]}
+  - {id: D039, pattern: "Bash(curl -T:*)", threat_class: publish_or_exfiltrate, source_ref: "arch §8.1 worker denies", applies_to: [worker]}
+  - {id: D040, pattern: "Bash(curl --upload-file:*)", threat_class: publish_or_exfiltrate, source_ref: "arch §8.1 worker denies", applies_to: [worker]}
+ask:
+  - {id: A001, pattern: "Bash(git checkout --:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine]}
+  - {id: A002, pattern: "Bash(git checkout .:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine]}
+  - {id: A003, pattern: "Bash(git restore:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine]}
+  - {id: A004, pattern: "Bash(git worktree remove --force:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine]}
+  - {id: A005, pattern: "Bash(git branch -D:*)", threat_class: git_disaster, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine]}
+  - {id: A006, pattern: "Bash(chmod -R:*)", threat_class: destructive_fs, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine]}
+  - {id: A007, pattern: "Bash(chown -R:*)", threat_class: destructive_fs, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine]}
+  - {id: A008, pattern: "Bash(pip install:*)", threat_class: supply_chain, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "NEW dependencies only; lockfile sync = allow (sode edit a/b)"}
+  - {id: A009, pattern: "Bash(pip3 install:*)", threat_class: supply_chain, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "NEW dependencies only; lockfile sync = allow (sode edit a/b)"}
+  - {id: A010, pattern: "Bash(uv pip install:*)", threat_class: supply_chain, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "NEW dependencies only; lockfile sync = allow (sode edit a/b)"}
+  - {id: A011, pattern: "Bash(npm install:*)", threat_class: supply_chain, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "NEW dependencies only; lockfile sync = allow (sode edit a/b)"}
+  - {id: A012, pattern: "Bash(npm i:*)", threat_class: other, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine]}
+  - {id: A013, pattern: "Bash(pnpm install:*)", threat_class: supply_chain, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "NEW dependencies only; lockfile sync = allow (sode edit a/b)"}
+  - {id: A014, pattern: "Bash(yarn add:*)", threat_class: other, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine]}
+  - {id: A015, pattern: "Bash(npm publish:*)", threat_class: publish_or_exfiltrate, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "worker-only DENY in sode (see deny list); ask retained for the engine/operator"}
+  - {id: A016, pattern: "Bash(twine upload:*)", threat_class: publish_or_exfiltrate, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "worker-only DENY in sode (see deny list); ask retained for the engine/operator"}
+  - {id: A017, pattern: "Bash(brew:*)", threat_class: supply_chain, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "NEW dependencies only; lockfile sync = allow (sode edit a/b)"}
+  - {id: A018, pattern: "Bash(sfw brew:*)", threat_class: supply_chain, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "NEW dependencies only; lockfile sync = allow (sode edit a/b)"}
+  - {id: A019, pattern: "Bash(uvx:*)", threat_class: supply_chain, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "NEW dependencies only; lockfile sync = allow (sode edit a/b)"}
+  - {id: A020, pattern: "Bash(pipx run:*)", threat_class: supply_chain, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "NEW dependencies only; lockfile sync = allow (sode edit a/b)"}
+  - {id: A021, pattern: "Bash(curl -T:*)", threat_class: publish_or_exfiltrate, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "worker-only DENY in sode (see deny list); ask retained for the engine/operator"}
+  - {id: A022, pattern: "Bash(curl --upload-file:*)", threat_class: publish_or_exfiltrate, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "worker-only DENY in sode (see deny list); ask retained for the engine/operator"}
+  - {id: A023, pattern: "Edit(**/pyproject.toml)", threat_class: supply_chain, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "NEW dependencies only; lockfile sync = allow (sode edit a/b)"}
+  - {id: A024, pattern: "Edit(**/package.json)", threat_class: supply_chain, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "NEW dependencies only; lockfile sync = allow (sode edit a/b)"}
+  - {id: A025, pattern: "Edit(**/requirements*.txt)", threat_class: supply_chain, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "NEW dependencies only; lockfile sync = allow (sode edit a/b)"}
+  - {id: A026, pattern: "Write(**/pyproject.toml)", threat_class: supply_chain, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "NEW dependencies only; lockfile sync = allow (sode edit a/b)"}
+  - {id: A027, pattern: "Write(**/package.json)", threat_class: supply_chain, source_ref: "~/.claude/settings.json#ask", applies_to: [worker, engine], note: "NEW dependencies only; lockfile sync = allow (sode edit a/b)"}
+  - {id: A028, pattern: "Bash(python3 projects/prediction_markets/polymarket/data/_scheduling/collector_ctl.py disable:*)", threat_class: host_job_control, source_ref: ".claude/settings.local.json#ask", applies_to: [engine], note: "the collector_ctl name/what/command ASK pattern — the shape to port, not the rule"}
+  - {id: A029, pattern: "Bash(python3 projects/prediction_markets/polymarket/data/_scheduling/collector_ctl.py enable:*)", threat_class: host_job_control, source_ref: ".claude/settings.local.json#ask", applies_to: [engine], note: "the collector_ctl name/what/command ASK pattern — the shape to port, not the rule"}
+counts: {deny_user: 34, ask_user: 27, ask_local: 2, deny_total: 40, ask_total: 29}

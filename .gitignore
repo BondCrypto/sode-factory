@@ -1,0 +1,11 @@
+# sode runtime state — never in git (architecture §1.6 rule 4)
+.sode/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# OS
+.DS_Store
