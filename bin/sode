@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+"""sode — the operator + engine CLI (architecture section 1.6).
+
+Thin launcher: put the repo root on sys.path so the `platform` package imports,
+then hand off to the dispatcher.
+"""
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
+from platform.cli.dispatch import main  # noqa: E402 - after sys.path setup
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

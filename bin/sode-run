@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+"""sode-run — the actor-tagged command runner.
+
+A SEPARATE binary from `sode`; the gate and measure stages execute through it.
+STUB at S1: the actor model and execution wiring are owned by C4 and land in
+session S3.
+"""
+import sys
+
+print(
+    "sode-run: actor-tagged command runner — not implemented at S1 (owned by C4, lands in session S3).",
+    file=sys.stderr,
+)
+sys.exit(2)

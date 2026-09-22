@@ -1,0 +1,79 @@
+# platform/cli/registry.yaml — the CLI verb registry (hawk B10).
+# The single authority for every `sode` verb. A verb not in this table fails the
+# gate; a verb here whose handler is missing at its stability level is caught by a
+# test. `sode-sh` and `sode-run` are SEPARATE binaries (workers call them
+# directly) and are recorded under `binaries:` below, not as verbs.
+#
+# stability: `stable` = implemented at S1 (C0); `planned` = registered now,
+# implemented by its owning component's session. profiles gate BEHAVIOUR, not verb
+# presence, so every verb lists all three.
+schema_version: 1
+
+verbs:
+  # --- C0 (S1): implemented ---
+  - {verb: init,     owner_component: C0,  session: S1,  stability: stable,  profiles: [local, standard, restricted], reads: [factory.schema], writes: [factory.yaml, .sode/active.json, .sode/local.yaml, platform/departments/*]}
+  - {verb: doctor,   owner_component: C0,  session: S1,  stability: stable,  profiles: [local, standard, restricted], reads: [factory.yaml, .sode/active.json, .sode/local.yaml, platform/schema/*], writes: []}
+  - {verb: version,  owner_component: C0,  session: S1,  stability: stable,  profiles: [local, standard, restricted], reads: [], writes: []}
+  - {verb: migrate,  owner_component: C0,  session: S1,  stability: stable,  profiles: [local, standard, restricted], reads: [schema_version artifacts], writes: [migrated artifacts]}
+
+  # --- C1 (S2): work store + scheduler ---
+  - {verb: new,      owner_component: C1,  session: S2,  stability: planned, profiles: [local, standard, restricted], reads: [backlog.yaml], writes: [work/<id>/]}
+  - {verb: intake,   owner_component: C1,  session: S2,  stability: planned, profiles: [local, standard, restricted], reads: [], writes: [work/<id>/item.yaml]}
+  - {verb: ready,    owner_component: C1,  session: S2,  stability: planned, profiles: [local, standard, restricted], reads: [work/*], writes: []}
+  - {verb: hold,     owner_component: C1,  session: S2,  stability: planned, profiles: [local, standard, restricted], reads: [work/<id>/], writes: [work/<id>/]}
+  - {verb: release,  owner_component: C1,  session: S2,  stability: planned, profiles: [local, standard, restricted], reads: [work/<id>/], writes: [work/<id>/]}
+  - {verb: dep,      owner_component: C1,  session: S2,  stability: planned, profiles: [local, standard, restricted], reads: [work/*], writes: [work/<id>/item.yaml]}
+  - {verb: lint,     owner_component: C1,  session: S2,  stability: planned, profiles: [local, standard, restricted], reads: [work/<id>/], writes: []}
+
+  # --- C2 (S7): lifecycle engine ---
+  - {verb: tick,     owner_component: C2,  session: S7,  stability: planned, profiles: [local, standard, restricted], reads: [work/*, .sode/run/*], writes: [.sode/run/*, work/<id>/events.jsonl]}
+  - {verb: status,   owner_component: C2,  session: S7,  stability: planned, profiles: [local, standard, restricted], reads: [work/*, .sode/run/*], writes: []}
+
+  # --- C10 (S13): ship + control room ---
+  - {verb: ps,          owner_component: C10, session: S13, stability: planned, profiles: [local, standard, restricted], reads: [.sode/run/*], writes: []}
+  - {verb: tail,        owner_component: C10, session: S13, stability: planned, profiles: [local, standard, restricted], reads: [.sode/events.jsonl], writes: []}
+  - {verb: stop-all,    owner_component: C10, session: S13, stability: planned, profiles: [local, standard, restricted], reads: [.sode/run/*], writes: [.sode/active.json]}
+  - {verb: ship,        owner_component: C10, session: S13, stability: planned, profiles: [local, standard, restricted], reads: [work/<id>/], writes: [work/<id>/events.jsonl]}
+  - {verb: revert,      owner_component: C10, session: S13, stability: planned, profiles: [local, standard, restricted], reads: [work/<id>/], writes: [work/<id>/]}
+  - {verb: handoff,     owner_component: C10, session: S13, stability: planned, profiles: [local, standard, restricted], reads: [work/<id>/], writes: [work/<id>/]}
+  - {verb: resume,      owner_component: C10, session: S13, stability: planned, profiles: [local, standard, restricted], reads: [work/<id>/], writes: [work/<id>/]}
+
+  # --- C5 (S5): brief renderer ---
+  - {verb: brief,    owner_component: C5,  session: S5,  stability: planned, profiles: [local, standard, restricted], reads: [work/<id>/, docs/design/*], writes: [work/<id>/brief.md]}
+
+  # --- C6 (S8): context record ---
+  - {verb: record,   owner_component: C6,  session: S8,  stability: planned, profiles: [local, standard, restricted], reads: [work/<id>/events.jsonl], writes: [work/<id>/record.yaml]}
+
+  # --- C7 (S6): gate + ratchet ---
+  - {verb: gate,     owner_component: C7,  session: S6,  stability: planned, profiles: [local, standard, restricted], reads: [platform/gate/*], writes: [.sode/gate_outcomes.jsonl]}
+  - {verb: ratchet,  owner_component: C7,  session: S6,  stability: planned, profiles: [local, standard, restricted], reads: [], writes: [platform/gate/*]}
+
+  # --- C9 (S9): departments ---
+  - {verb: kb,       owner_component: C9,  session: S9,  stability: planned, profiles: [local, standard, restricted], reads: [platform/departments/*], writes: [platform/departments/*/kb/*]}
+
+  # --- C11 (S17): measure ---
+  - {verb: measure,  owner_component: C11, session: S17, stability: planned, profiles: [local, standard, restricted], reads: [.sode/measure_queue.jsonl], writes: [work/<id>/record.yaml]}
+
+  # --- C12 (S12): cost ---
+  - {verb: headroom, owner_component: C12, session: S12, stability: planned, profiles: [local, standard, restricted], reads: [.sode/local.yaml], writes: [.sode/local.yaml]}
+
+  # --- C13 (S15): observe + active pointer ---
+  - {verb: harness-card, owner_component: C13, session: S15, stability: planned, profiles: [local, standard, restricted], reads: [factory.yaml, .sode/active.json], writes: []}
+  - {verb: promote,      owner_component: C13, session: S15, stability: planned, profiles: [local, standard, restricted], reads: [], writes: [.sode/active.json]}
+  - {verb: rollback,     owner_component: C13, session: S15, stability: planned, profiles: [local, standard, restricted], reads: [], writes: [.sode/active.json]}
+
+  # --- C14 (S16): metrics ---
+  - {verb: metrics,  owner_component: C14, session: S16, stability: planned, profiles: [local, standard, restricted], reads: [metrics/registry.yaml, .sode/metrics/*], writes: [metrics/*]}
+
+  # --- C15 (S18): automations + drift ---
+  - {verb: automations, owner_component: C15, session: S18, stability: planned, profiles: [local, standard, restricted], reads: [factory.yaml], writes: [.sode/effects.jsonl]}
+  - {verb: drift,       owner_component: C15, session: S18, stability: planned, profiles: [local, standard, restricted], reads: [platform/*], writes: []}
+
+  # --- C3 (S4 mechanism / clone-GC policy is backlog B013): garbage collection ---
+  - {verb: gc,       owner_component: C3,  session: B013, stability: planned, profiles: [local, standard, restricted], reads: [.sode/clones/*, .sode/trajectories/*], writes: [.sode/clones/*]}
+
+# Separate binaries — workers call these directly; they are NOT `sode` verbs.
+binaries:
+  - {name: sode,     owner_component: C0,  session: S1,  role: "operator + engine CLI (this registry)"}
+  - {name: sode-sh,  owner_component: C4,  session: S3,  role: "worker shell shim (guard enforcement point)"}
+  - {name: sode-run, owner_component: C4,  session: S3,  role: "actor-tagged command runner (gate + measure execute through it)"}

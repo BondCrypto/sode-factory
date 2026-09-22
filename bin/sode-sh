@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+"""sode-sh — the worker shell shim (guard enforcement point).
+
+A SEPARATE binary from `sode`; workers call it directly. STUB at S1: the rule
+sets, hook installers and the hash-chained shim log are owned by C4 and land in
+session S3.
+"""
+import sys
+
+print(
+    "sode-sh: worker shell shim — not implemented at S1 (owned by C4, lands in session S3).",
+    file=sys.stderr,
+)
+sys.exit(2)
