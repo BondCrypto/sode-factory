@@ -1,0 +1,25 @@
+# platform/policy/git.yaml — git policy shape (architecture section 3.3, review B6).
+# C0 defines the shape; C4 (guards, S3) enforces it. Referenced by factory.yaml `git:`.
+schema_version: 1
+
+# Remotes a worker may push to (empty in local/restricted: no push).
+allowed_remotes: []
+
+# Workers may only write refs under this namespace.
+worker_refspec: "sode/<id>"
+
+# The ONE canonical commit identity (never a hostname/placeholder fallback).
+canonical_identity:
+  name: alexbond
+  email: "49620818+BondCrypto@users.noreply.github.com"
+
+# Commit-message rule the gate enforces on worker commits.
+commit_msg_rule:
+  subject_max_chars: 72
+  subject_pattern: "type(scope): description"
+  no_trailing_period: true
+  provider_attribution_trailers: false
+
+# Branches no worker may push to directly.
+protected_branches:
+  - main
