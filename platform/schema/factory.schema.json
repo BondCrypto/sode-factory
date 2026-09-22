@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "factory.yaml",
+  "description": "The versioned factory definition (architecture section 3.3). The ONLY config in git; machine-local binding lives in .sode/local.yaml.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "policy_profile", "isolation", "secrets_broker",
+    "secrets_registry", "targets", "git", "reserve_pct", "runners",
+    "automations", "integrations", "decision_model", "scorers", "providers", "stages"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "policy_profile": { "enum": ["standard", "restricted", "local"] },
+    "isolation": { "enum": ["clone", "container"] },
+    "secrets_broker": { "enum": ["1password", "none"] },
+    "secrets_registry": { "type": "string" },
+    "targets": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["path", "default_branch"],
+        "properties": {
+          "path": { "type": "string" },
+          "default_branch": { "type": "string" },
+          "setup": { "type": "string" },
+          "test_cmd": { "type": "string" },
+          "cache": { "type": "object" },
+          "healthcheck": { "type": "string" },
+          "gate": { "type": "object" }
+        }
+      }
+    },
+    "git": { "type": "string" },
+    "reserve_pct": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "runners": {
+      "type": "object",
+      "additionalProperties": { "type": "object" }
+    },
+    "automations": { "type": "array" },
+    "integrations": { "type": "object" },
+    "decision_model": { "type": ["null", "string", "object"] },
+    "scorers": {
+      "type": "object",
+      "required": ["sample_rate", "dimensions"],
+      "properties": {
+        "sample_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "dimensions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "providers": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["adapter", "billing", "families"],
+        "properties": {
+          "adapter": { "type": "string" },
+          "billing": { "enum": ["subscription", "usage", "none"] },
+          "families": { "type": "array", "items": { "type": "string" } },
+          "tools": { "type": "array", "items": { "type": "string" } },
+          "hooks": { "type": ["null", "string"] }
+        }
+      }
+    },
+    "stages": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "spec": { "$ref": "#/definitions/stage" },
+        "implement": { "$ref": "#/definitions/stage" },
+        "review": { "$ref": "#/definitions/stage" },
+        "verify": { "$ref": "#/definitions/stage" },
+        "ship": { "$ref": "#/definitions/stage" }
+      }
+    }
+  },
+  "definitions": {
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider"],
+      "properties": {
+        "provider": { "type": "string" },
+        "model": { "type": ["null", "string"] },
+        "permission": { "enum": ["plan_only", "edit_in_clone", "read_only", "none"] },
+        "budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "rate_pct": { "type": "number", "minimum": 0 },
+            "cost_m": { "type": "number", "minimum": 0 }
+          }
+        },
+        "max_attempts": { "type": "integer", "minimum": 1 },
+        "secrets": { "type": "array", "items": { "type": "string" } },
+        "cross_family_required": { "type": "boolean" }
+      }
+    }
+  }
+}

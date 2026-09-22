@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": ".sode/local.yaml",
+  "description": "Machine-local config split from the versioned factory.yaml (hawk B5): factory.yaml NAMES capabilities, local.yaml BINDS them. Never committed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "profile", "broker", "providers", "headroom_samples"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "profile": { "enum": ["standard", "restricted", "local"] },
+    "broker": {
+      "type": "object",
+      "required": ["kind", "state"],
+      "properties": {
+        "kind": { "enum": ["1password", "none"] },
+        "state": { "enum": ["available", "unavailable", "unknown"] }
+      }
+    },
+    "providers": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "cli_path": { "type": ["null", "string"] },
+          "cli_version": { "type": ["null", "string"] },
+          "privacy_mode": { "type": ["null", "string"] },
+          "operator_attested_on": { "type": ["null", "string"] }
+        }
+      }
+    },
+    "headroom_samples": { "type": "array" }
+  }
+}

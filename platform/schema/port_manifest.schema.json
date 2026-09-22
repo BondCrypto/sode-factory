@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "platform/ports/<asset>.yaml",
+  "description": "A port-conformance manifest (review E2). Ported = copied + adapted + tested, never imported. Records provenance, the invariants kept and dropped, and the sode tests that pin each kept invariant. A port without its manifest fails the gate.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "asset", "source", "source_commit", "adapted_invariants", "dropped_behaviour", "pinning_tests"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "asset": { "type": "string" },
+    "source": {
+      "type": "object",
+      "required": ["repo", "path"],
+      "additionalProperties": false,
+      "properties": {
+        "repo": { "type": "string" },
+        "path": { "type": "string" }
+      }
+    },
+    "source_commit": { "type": "string" },
+    "adapted_invariants": { "type": "array", "items": { "type": "string" } },
+    "dropped_behaviour": { "type": "array", "items": { "type": "string" } },
+    "pinning_tests": { "type": "array", "items": { "type": "string" } }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": ".sode/predictions.jsonl row",
+  "description": "One append-only prediction row (architecture section 9.1/9.3). Current schema_version is 2: it carries the computed `ratio`. v1 rows are upgraded by platform/schema/migrations/prediction.py. C0 defines the schema; C12 fills the ledger.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "item", "stage", "class", "department", "model", "predicted", "actual", "ratio", "ts"],
+  "properties": {
+    "schema_version": { "const": 2 },
+    "item": { "type": "string" },
+    "stage": { "type": "string" },
+    "class": { "type": "string" },
+    "department": { "type": "string" },
+    "model": { "type": "string" },
+    "predicted": { "type": "number" },
+    "actual": { "type": "number" },
+    "ratio": { "type": ["null", "number"] },
+    "ts": { "type": "string" }
+  }
+}

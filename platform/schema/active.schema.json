@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": ".sode/active.json",
+  "description": "The active-harness pointer written by `sode init` at the init sha (architecture section 7 / C13 owns promote/rollback later).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "sha", "profile", "provider", "created_at"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "sha": { "type": "string" },
+    "profile": { "enum": ["standard", "restricted", "local"] },
+    "provider": { "type": "string" },
+    "created_at": { "type": "string" }
+  }
+}

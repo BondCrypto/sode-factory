@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": ".sode/trajectories/<hash>.json",
+  "description": "PLACEHOLDER schema (C0/S1): gives migrate + doctor a registry entry to walk. The owning component C13 (S15) replaces this with the real shape.",
+  "type": "object",
+  "required": ["schema_version"],
+  "properties": {
+    "schema_version": { "const": 1 }
+  },
+  "additionalProperties": true
+}
