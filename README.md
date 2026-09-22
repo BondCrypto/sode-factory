@@ -1,44 +1,44 @@
 # sode-factory
 
-A software factory: the outer loop that owns work (triage → spec → implement → review → verify → ship → measure),
-driving ephemeral, isolated, bounded workers through provider-agnostic adapters, with a per-item context record, a
-deterministic gate plus an evidence-required checker, departments with curated knowledge bases, guards, a cost model
-in two currencies, and a self-evolving loop over its own runs. It produces production-ready execution tooling for
-real use.
+A software factory: the outer loop that owns work (triage → spec → implement →
+review → verify → ship → measure) and drives ephemeral, isolated workers through
+provider-agnostic adapters. A fresh clone is independently valuable and runs
+offline on a mock provider (architecture §1.4).
 
-**Status (2026-09-21): SPEC LOCKED, BUILD NOT STARTED.** This repo holds the complete specification and build plan.
-No code exists yet by design (architecture before skeleton). The first build session is S1 (see the build sessions).
+**Status:** C0 skeleton (build session S1). The clonable root, the `factory.yaml`
+schema, the `sode` CLI (`init` · `doctor` · `version` · `migrate`), the CLI verb
+registry, and the one-command gate exist. The lifecycle engine, work store,
+guards, gate registry and departments land in later sessions (see
+`docs/design/sode_factory_build_sessions.md`).
 
-## Two fixed constraints
-1. **Standalone-clone value** — a fresh clone of this repo is independently valuable; no dependency on any other repo's
-   internals (`docs/design/sode_factory_architecture.md` §1.4 is the acceptance test).
-2. **Architecture before skeleton** — nothing builds before the spec set is locked. It is locked.
+## How to validate
 
-## Read in this order
-1. `docs/design/sode_factory_architecture.md` — the locked architecture (§1–§9, §4A, §1.6 taxonomy, §2.7 transition
-   contract, Appendix A source dispositions, Appendix B apply-check walk).
-2. `docs/design/sode_factory_component_specs.md` — sixteen build-ready component contracts (C0–C15): responsibility,
-   interface, acceptance test, failure modes.
-3. `docs/design/sode_factory_build_plan.md` — dependency order, waves, W1/W2 brief stubs, backlog seeds B001–B025.
-4. `docs/design/sode_factory_build_sessions.md` — the split into fresh build sessions: S1–S19 = functional v1,
-   S20–S21 = model-agnostic proof + learning tooling, K1–K7 = department KB seeding (parallel).
-5. `docs/design/sode_factory_guard_rules_seed.yaml` — the verbatim deny/ask rule catalogue the guards session ports.
-6. `docs/audits/sode_factory_spec_review_2026-09-18.md` — the adversarial review and its dispositions (why).
-7. `backlog.yaml` — the sode-scoped backlog: every session and every seed as an item.
+Requires Python 3.12+ and PyYAML (`pip install -r requirements.txt`); no network.
 
-## How a build session starts
-A fresh agent session receives ONE paste-first brief rendered from the build plan §4 stub plus the build sessions §4
-contract: goal, exact spec sections to read, entry tag, touches, do-not-touch, executable acceptance, budget row, exit
-criteria, report-back format, recitation. It ends with its acceptance green, `make test` green,
-`tests/test_standalone.py` green, a session record, and a tag. A maker that finds it must re-decide an architecture
-item stops and surfaces it; that is a defect in the spec, not a judgment call for the maker.
+```bash
+git clone https://github.com/BondCrypto/sode-factory.git && cd sode-factory
+make test                                    # the one-command gate: pytest + structural checks
+./bin/sode init --profile local --provider mock   # write factory.yaml + .sode/ (offline default)
+./bin/sode doctor                            # validate the tree + environment (exit 0 in local)
+```
 
-## Repo taxonomy (locked, §1.6)
-`factory.yaml` · `bin/` · `platform/<component>/` · `products/<line>/` · `work/<id>/` · `metrics/` · `evals/` ·
-`docs/{design,adr,runbooks}/` · `tests/` · `.sode/` (gitignored runtime). Placement rules and the allowlist are in
-§1.6; a new top-level directory is an operator-approved act.
+`make test` runs the pytest suite and the four S1 structural checks
+(`check_repo_structure` · `check_factory_schema_doc_sync` · `check_ports` ·
+`check_grep_clean`). `make test-all` also runs the standalone end-to-end
+(`tests/test_standalone.py`), which copies the tree into a throwaway HOME and
+re-runs the gate to prove the clone carries no machine-local dependency.
 
-## Provenance
-Designed in an operator-led design session (2026-09-15 → 2026-09-21) from the design inputs distilled in the sibling
-research repo, two adversarial Codex reviews, and the operator's own sources. The research repo and this repo are
-siblings: neither imports the other's internals; the only interface is two gated artifact classes (§1.3).
+## Layout
+
+- `factory.yaml` — the versioned factory definition (machine-local binding lives
+  in the gitignored `.sode/local.yaml`).
+- `bin/` — `sode` (operator + engine CLI) plus `sode-sh` / `sode-run` (worker
+  binaries; stubs until session S3).
+- `platform/` — the factory plane, one package per component (C0–C15).
+- `products/` — the product plane (imports `platform` only through `platform/api`).
+- `work/` · `metrics/` · `evals/` — work items, the metric registry, the eval set.
+- `docs/` — the locked spec set, ADRs and runbooks.
+- `tests/` — mirrors `platform/`, plus `tests/test_standalone.py`.
+
+The spec set under `docs/design/` is the source of truth. Start with
+`docs/design/sode_factory_architecture.md`.
