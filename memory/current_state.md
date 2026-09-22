@@ -8,22 +8,33 @@ metadata:
 > Standing rule: this file records the LIVE position only. Landed work belongs in git and tags; durable lessons in
 > topic memories; tasks in `backlog.yaml`. If you append a block, delete one.
 
-### NOW (2026-09-21): SPEC LOCKED · REPO INITIATED · BUILD NOT STARTED
+### NOW (2026-09-22): S1 LANDED · C0 SKELETON GREEN · PUSHED
 
-- **HEAD:** the initial commit set (spec set + backlog + CLAUDE.md + role prompt + memory). No code. No tags yet.
-- **Status:** `docs/design/sode_factory_{architecture,component_specs,build_plan,build_sessions}.md` +
-  `guard_rules_seed.yaml` + `docs/audits/sode_factory_spec_review_2026-09-18.md` are LOCKED (operator 2026-09-21).
-- **Gate / standalone test:** do not exist until S1 lands.
-- **Backlog:** 53 items — 21 code sessions (S1–S21), 7 KB seeding sessions (K1–K7), 25 seeds (B001–B025).
+- **HEAD:** `a58f4ed`, tag `s1-skeleton`, pushed to `origin/main` (13 commits from f0ce094).
+- **Status:** S1 (C0 skeleton) landed. `sode` CLI live — `init · doctor · version · migrate`; `factory.yaml`
+  schema (§3.3 shape); CLI registry (34 verbs, C1–C15 = `planned`); ports-manifest gate; 7 department stub dirs.
+  Spec set LOCKED (operator 2026-09-21).
+- **Gate / standalone:** `make test` GREEN (74 tests + 4 checks: repo-structure · schema-doc-sync · ports ·
+  grep-clean). `tests/test_standalone.py` GREEN in a temp HOME (skeleton form; `make test-all` includes it).
+- **New dep:** PyYAML pinned `>=6.0,<7` in `requirements.txt` — the one runtime dep (YAML config); rest stdlib.
+- **Backlog:** 53 items — S2–S21, K1–K7, seeds B001–B025 pending.
 
 ### IMMEDIATE NEXT
-1. **S1 — C0 skeleton.** Render the brief from `docs/references/build_session_brief_template.md` + build plan §4
-   W1-1 + component spec C0; dispatch to a fresh session (or run inline); verify; tag `s1-skeleton`.
-2. **K1–K3 in parallel** (security · qa_quality · factory_ops KBs) from our own material; K4–K6 wait for
-   operator-brought sources (backend · frontend · devops).
+1. **S2 — C1 work store** (item schema · `classes.yaml` generated tables · routing · scheduler · leases on disk ·
+   `sode new/ready/hold/dep/lint` · triage output schema). Depends on S1 (done). Sequential on main.
+2. **S3 — C4 guards (RED)** then **S4 — C3 worker runtime** complete W1; S4 depends on S1 + S3.
+3. **K1–K3 KB seeding, parallel** (security · qa_quality · factory_ops) from our own material; each in a SEPARATE
+   clone (touches `platform/departments/*/kb/` only). K3 REQUIRED before S10.
 
 ### IN-FLIGHT
 none.
 
 ### OPEN OPERATOR DECISIONS
 none. (Product-plane design session = seed B005; waits for a `paper_validated_card`.)
+
+### S1 FOLLOW-UPS (carry forward; not blockers)
+- `platform` package name shadows stdlib `platform` (LOCKED §1.6) — hardening follow-up (conftest guard or
+  interpreter pin); works today.
+- `secrets.yaml` (referenced by `factory.yaml`) lands at S3/C4; doctor skips it in `local`, would FAIL in
+  `standard`/`restricted`.
+- Fold the 4 S1 bootstrap gate checks into the real gate registry at S6/C7a. Interpreter 3.14.7 vs spec 3.12 — pin.
