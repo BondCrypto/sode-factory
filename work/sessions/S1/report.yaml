@@ -1,0 +1,101 @@
+# work/sessions/S1/report.yaml — build session S1 (C0 skeleton) report-back.
+# Rendered against docs/references/build_session_brief_template.md report-back shape.
+session: S1
+component: C0
+title: "Skeleton + factory.yaml schema + sode CLI + mock-run harness"
+result: complete
+
+did:
+  - "Audited the ~70% C0 skeleton (prior maker, uncommitted) against the C0 spec, arch section 1.4/1.6/3.3, and the S1 build-session row."
+  - "Wrote the Makefile: `make test` = pytest over tests/ (minus the standalone e2e) + the four structural checks; added `test-all`, `standalone`, `setup`, `clean`, `help`."
+  - "Wired the gate over the EXISTING check code (platform/cli/gate_bootstrap.py -> check_repo_structure, check_factory_schema_doc_sync, check_ports, check_grep_clean); did not duplicate check logic."
+  - "Wrote the pytest suite (75 tests) mirroring platform/: core primitives, schema validator/registry/migrations, CLI dispatch/registry/init/doctor, ports conformance."
+  - "Wrote tests/test_standalone.py (skeleton form): temp HOME, copy tree, `make test` green, `sode init` (local+mock), `sode doctor` exit 0, grep-clean per section 1.4(3)."
+  - "Added a known-good and known-bad port fixture (tests/ports/fixtures/) plus the migrate and BAD-schema fixtures wired into tests."
+  - "Fixed a bug: kind inference could not resolve the spec-named fixture `prediction_v1.jsonl`, so the documented `sode migrate --check --path .../prediction_v1.jsonl` failed with 'pass --kind'."
+  - "Added requirements.txt (PyYAML) — referenced by the code and the allowlist but previously absent."
+  - "Rewrote README.md as a lean what-this-is + how-to-validate, and added README.md to the grep-clean scan set."
+  - "Committed the C0 skeleton as logical commits, each on a green working tree; tagged the final commit s1-skeleton."
+
+did_not:
+  - "sode new/intake/ready/hold/dep/lint (C1/S2), tick/status (C2/S7), record (C6/S8), gate registry (C7/S6), measure/metrics (S16/S17) — registered as `planned` only, not implemented."
+  - "platform/policy/secrets.yaml — referenced by factory.yaml `secrets_registry`; owned by C4 (S3); doctor correctly SKIPs it in the local profile. Left as a follow-up (no schema requires it at S1)."
+  - "section 1.4(2): run ONE work item end to end on the mock provider — needs the engine + adapters (S4/S7); the standalone test leaves the seam for it, with no skip markers in C0 scope."
+  - "Container isolation, remote runners, GitHub/branch-protection checks — profile-gated and land with their components."
+
+decisions:
+  - what: "kind_for_filename falls back to the first '_'-delimited segment of the stem."
+    why: "The spec names the one-version-behind fixture `prediction_v1`; `sode migrate --path .../prediction_v1.jsonl` must resolve the kind without --kind. Stem was `prediction_v1`, not in FILENAME_KIND, so kind inference returned None and the documented acceptance command failed."
+    alternatives_rejected: "Require --kind on the acceptance command (adds an undocumented flag); prefix-match every known kind (fragile — e.g. 'local_backup' would match 'local')."
+  - what: "`make test` excludes tests/test_standalone.py; a separate `standalone`/`test-all` target runs it."
+    why: "The standalone test copies the tree and runs `make test` inside the copy. If `make test` included it, that would recurse infinitely. Excluding it from the fast gate keeps the copied gate non-recursive while `python3 -m pytest tests/ -q` still runs everything."
+    alternatives_rejected: "A nested-run env guard that skips the e2e when nested — that is a skip marker, which the brief forbids."
+  - what: "The standalone test repoints HOME at a throwaway dir but injects the interpreter's real site-packages via PYTHONPATH and pins PY=sys.executable."
+    why: "pytest and PyYAML are installed in the user site under $HOME; a bare temp HOME hid them and `make test` failed with 'No module named pytest'. The temp HOME still catches repo code that reads a machine-local path; the Python toolchain is an environment concern, not a repo concern (a real fresh clone runs `pip install -r requirements.txt`)."
+    alternatives_rejected: "Leave HOME unchanged (weakens the machine-local-leak check); vendor the deps (out of scope)."
+  - what: "Added README.md to the grep-clean scan set (platform/core/repo.py)."
+    why: "README is the first file a clone shows; section 1.4(3) says the tree greps clean. docs/ and CLAUDE.md stay out of scope because they document the sibling relationship."
+    alternatives_rejected: "Leave README unscanned (a foreign token could slip into the most-read file)."
+
+concerns:
+  - "The repo package is named `platform`, which shadows the stdlib `platform` module. It works today (CLI + pytest verified) because no factory code imports the stdlib module and conftest puts the repo root first, but it is fragile: a future pytest plugin that imports stdlib `platform` after collection could break test imports. Documented in platform/__init__.py. This is a LOCKED taxonomy choice (section 1.6), so not re-decided here."
+  - "factory.yaml references platform/policy/secrets.yaml which does not exist yet (C4/S3 owns it). Safe at S1 (local profile skips it), but doctor in `standard`/`restricted` would FAIL until S3 lands it."
+  - "The machine runs Python 3.14.7; the spec language target is 3.12. Nothing 3.13/3.14-specific is used, but the version is unpinned."
+
+assumptions:
+  - "PyYAML (>=6) is installed for the interpreter that runs `make test` (present here via the user site; pinned in requirements.txt)."
+  - "`make` and `git` (>=2.40) are on PATH; verified locally (git 2.50)."
+  - "jsonschema is NOT required — the factory uses the in-tree platform.schema.validate; confirmed jsonschema is absent and unused."
+
+rejected_paths:
+  - "Adding a jsonschema dependency — the in-tree dependency-free validator covers the schema subset the factory uses; keeps the clone offline and stdlib-first."
+  - "A pytest.ini / pyproject.toml to set import mode — the existing conftest.py sys.path shim plus test packages (__init__.py) resolve imports without a new top-level config file."
+
+suggested_followups:
+  - "S3: add platform/policy/secrets.yaml + its schema so doctor passes in standard/restricted."
+  - "S6 (C7): fold the four gate_bootstrap checks into the real gate registry with the ratchet; keep the remediation-per-check + BAD-fixture contract."
+  - "Harden conftest.py (or reconsider the `platform` package name) against a future stdlib-platform shadow; or pin the interpreter."
+  - "Consider a requirements pin / tox matrix to fix the Python version drift (3.14 vs spec 3.12)."
+
+confusions:
+  - "The task pointed at scratchpad/s1_brief.md, which did not exist. Reconstructed the authoritative S1 requirements from docs/design/sode_factory_build_sessions.md (S1 row), the C0 component spec, and architecture sections 1.4, 1.6 and 3.3."
+
+tool_failures:
+  - "The referenced brief file (scratchpad/s1_brief.md) was absent; no other tool failures."
+
+acceptance_results:
+  - cmd: "make test"
+    expected: "GREEN"
+    actual: "exit 0; 74 unit tests pass + 4 structural checks pass"
+    pass: true
+  - cmd: "python3 -m pytest tests/ -q"
+    expected: "N passed"
+    actual: "75 passed"
+    pass: true
+  - cmd: "./bin/sode init --profile local --provider mock"
+    expected: "exit 0"
+    actual: "exit 0 (idempotent; keeps existing factory.yaml, refreshes active.json)"
+    pass: true
+  - cmd: "./bin/sode doctor; echo exit=$?"
+    expected: "exit=0"
+    actual: "exit=0 (7 pass, 4 profile-skips, 0 fail)"
+    pass: true
+  - cmd: "./bin/sode version"
+    expected: "prints sode + schema versions"
+    actual: "sode 0.1.0; schema_versions: active=1 events=1 factory=1 gate=1 item=1 local=1 port_manifest=1 prediction=2 record=1 trajectory=1"
+    pass: true
+  - cmd: "./bin/sode migrate --check --path tests/schema/fixtures/prediction_v1.jsonl"
+    expected: "reports pending migration"
+    actual: "pending: prediction_v1.jsonl[0] (prediction) 1 -> 2"
+    pass: true
+  - cmd: "./bin/sode migrate --apply --path <copy of prediction_v1.jsonl>"
+    expected: "round-trips"
+    actual: "applied 1 row -> v2 (ratio=0.5); re-check reports none pending; upgraded row validates against the v2 schema. Run on a copy so the committed fixture stays one version behind."
+    pass: true
+  - cmd: "python3 -m pytest tests/test_standalone.py -q"
+    expected: "green (skeleton form)"
+    actual: "1 passed"
+    pass: true
+
+cost:
+  tokens_or_pct: "advisor-tracked; single Opus session, ~one work unit. Exact token count not self-measured (see token-cost-audit)."
