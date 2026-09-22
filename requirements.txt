@@ -1,0 +1,7 @@
+# sode-factory runtime dependencies.
+#
+# sode is stdlib-first (architecture section 0): schema validation, ids, the
+# clock, atomic writes and the JSONL ledgers are all stdlib. The ONE config
+# dependency is PyYAML, used to read/write factory.yaml, .sode/local.yaml, the
+# CLI registry and the port manifests. Pinned via `sfw` on this machine.
+PyYAML>=6.0,<7
