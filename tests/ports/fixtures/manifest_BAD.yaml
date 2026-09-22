@@ -1,0 +1,8 @@
+# BAD FIXTURE: an INVALID manifest for `demo_port` -- missing required keys
+# (source_commit, adapted_invariants, dropped_behaviour, pinning_tests). The
+# port check MUST refuse this (do not fix).
+schema_version: 1
+asset: demo_port
+source:
+  repo: some-research-repo
+  path: tools/demo_port.py

@@ -1,0 +1,8 @@
+# A ported asset for the port-conformance check (test fixture).
+# The marker below declares this file as a port of the asset `demo_port`.
+# SODE-PORT: demo_port
+"""demo_port — a copied + adapted helper, standing in for a real ported asset."""
+
+
+def demo():
+    return "ported"

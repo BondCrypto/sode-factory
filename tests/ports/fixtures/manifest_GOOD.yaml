@@ -1,0 +1,13 @@
+# GOOD FIXTURE: a valid port-conformance manifest for the asset `demo_port`.
+schema_version: 1
+asset: demo_port
+source:
+  repo: some-research-repo
+  path: tools/demo_port.py
+source_commit: "0000000000000000000000000000000000000000"
+adapted_invariants:
+  - "the ported helper returns a stable, sode-native value"
+dropped_behaviour:
+  - "the source's network fetch path is not ported"
+pinning_tests:
+  - tests/ports/test_ports.py::test_marked_port_with_valid_manifest_passes
